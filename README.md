@@ -39,6 +39,22 @@ Let's assume our Model is **OrdersTable**, Controller **Orders** and field to ed
         'containerType' => 'div'
     ]) ?>
 
+##### Including CSRF Token
+To add a CSRF token to your Ajax request by setting the `X-CSRF-Token`, add the following setting to the view:
+
+    'csrfToken' => json_encode($this->request->getParam('_csrfToken'))
+    
+For example, following the example above:
+
+        'toolTip'       => 'Click to edit',
+        'containerType' => 'div',
+        'csrfToken' => json_encode($this->request->getParam('_csrfToken'))
+    ]) ?>
+    
+Don't forget to add the comma trailing the last setting (in this case, `containerType`). You may have to unlock the action in your `initialize()` function in your controller:
+
+    $this->Security->setConfig('unlockedActions', ['inPlaceEditing']);
+
 #### Add an action handler in your controller
 
 Before you may need to disable security component for this specific action by adding: `$this->Security->setConfig('unlockedActions', ['inPlaceEditing']);` on `beforeFilter` method of your controller.

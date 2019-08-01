@@ -38,19 +38,29 @@ class InPlaceEditingHelper extends Helper
         $submitText    = $this::extractSetting($settings, 'submitText', 'Save');
         $toolTip       = $this::extractSetting($settings, 'toolTip', 'Click to edit.');
         $containerType = $this::extractSetting($settings, 'containerType', 'div');
-
+        $csrfToken     = $this::extractSetting($settings, 'csrfToken', '');
+        $rows          = $this::extractSetting($settings, 'rows', '1');
+        
+        //remove quotation marks
+        $csrfToken = trim($csrfToken, '"');
+        
         $elementID = 'inplace_'.$modelName.'_'.$fieldName.'_'.$id;
         $input     = '<'.$containerType.' id="'.$elementID.'" class="in_place_editing">'.$value.'</'.$containerType.'>';
         $script    = "$(function(){
                         $('#$elementID').editable(
-                            '..$actionName/$id',
+                            '..$actionName/$id', 
                             {
                                 name      : '$fieldName',
                                 type      : '$type',
                                 cancel    : '$cancelText',
                                 submit    : '$submitText',
                                 tooltip   : '$toolTip',
-                                rows      : 5
+                                rows      : '$rows',
+                                ajaxoptions : {
+                                    beforeSend: function(xhr){
+                                        xhr.setRequestHeader('X-CSRF-Token', '$csrfToken');
+                                    },
+                                }
                             }
                         );
                     });";
